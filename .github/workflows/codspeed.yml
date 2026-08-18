@@ -1,0 +1,78 @@
+name: CodSpeed
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+  # `workflow_dispatch` allows CodSpeed to trigger backtest
+  # performance analysis in order to generate initial data.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # for OpenID Connect authentication with CodSpeed
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUST_LOG: info
+  # Every benchmark binary statically links most of the workspace. With the
+  # workspace-wide `lto = true` (see `.cargo/config.toml`), a single linker
+  # process peaks at ~10 GB of RAM, which does not fit on GitHub-hosted runners.
+  # Measurements stay comparable between runs because the setting is fixed here.
+  CARGO_PROFILE_BENCH_LTO: "false"
+  CARGO_BUILD_JOBS: "3"
+
+jobs:
+  benchmarks:
+    name: Bench ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: JS
+            packages: -p biome_js_parser
+          - name: JSON
+            packages: -p biome_json_parser -p biome_json_formatter -p biome_json_analyze
+          - name: CSS
+            packages: -p biome_css_parser -p biome_css_formatter -p biome_css_analyze
+          - name: HTML
+            packages: -p biome_html_parser -p biome_html_formatter -p biome_html_analyze
+          - name: GraphQL and YAML
+            packages: -p biome_graphql_parser -p biome_graphql_formatter -p biome_yaml_parser
+          - name: Markdown and Tailwind
+            packages: -p biome_markdown_parser -p biome_tailwind_parser
+          - name: Core
+            packages: -p biome_rowan -p biome_console -p biome_configuration -p biome_package
+    steps:
+      - name: Checkout PR Branch
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Install toolchain
+        uses: moonrepo/setup-rust@abb2d32350334249b178c401e5ec5836e0cd88d3 # v1.3.0
+        with:
+          channel: stable
+          cache-target: release
+          bins: cargo-codspeed
+          cache-base: main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build the benchmark targets
+        timeout-minutes: 25
+        run: cargo codspeed build ${{ matrix.packages }}
+
+      - name: Run the benchmarks
+        uses: CodSpeedHQ/action@4296e51e7041e24dadb86d1d6e8b9320d223dbe8 # v5.0.3
+        timeout-minutes: 30
+        with:
+          mode: simulation
+          run: cargo codspeed run ${{ matrix.packages }}
