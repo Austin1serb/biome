@@ -13,6 +13,7 @@
   [![npm version][npm-badge]][npm-url]
   [![VSCode version][vscode-badge]][vscode-url]
   [![Open VSX version][open-vsx-badge]][open-vsx-url]
+  [![CodSpeed][codspeed-badge]][codspeed-url]
 
   [ci-badge]: https://github.com/biomejs/biome/actions/workflows/main.yml/badge.svg
   [ci-url]: https://github.com/biomejs/biome/actions/workflows/main.yml
@@ -24,6 +25,8 @@
   [vscode-url]: https://marketplace.visualstudio.com/items?itemName=biomejs.biome
   [open-vsx-badge]: https://img.shields.io/visual-studio-marketplace/v/biomejs.biome?label=Open%20VSX%20Registry&logo=data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2aWV3Qm94PSI0LjYgNSA5Ni4yIDEyMi43IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGQ9Ik0zMCA0NC4yTDUyLjYgNUg3LjN6TTQuNiA4OC41aDQ1LjNMMjcuMiA0OS40em01MSAwbDIyLjYgMzkuMiAyMi42LTM5LjJ6IiBmaWxsPSIjYzE2MGVmIi8+CiAgPHBhdGggZD0iTTUyLjYgNUwzMCA0NC4yaDQ1LjJ6TTI3LjIgNDkuNGwyMi43IDM5LjEgMjIuNi0zOS4xem01MSAwTDU1LjYgODguNWg0NS4yeiIgZmlsbD0iI2E2MGVlNSIvPgo8L3N2Zz4=&labelColor=374151&color=60a5fa
   [open-vsx-url]: https://open-vsx.org/extension/biomejs/biome
+  [codspeed-badge]: https://img.shields.io/endpoint?url=https://codspeed.io/badge.json
+  [codspeed-url]: https://app.codspeed.io/Austin1serb/biome?utm_source=badge
 
 <!-- Insert new entries lexicographically by language code.
      For example given below is the same order as these files appear on page:
